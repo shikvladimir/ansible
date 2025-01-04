@@ -1,0 +1,19 @@
+---
+  - name: Setting ubuntu
+    hosts: all
+    become: true 
+    tasks:
+      - name: Install Docker
+        apt:
+          name: docker.io
+          state: present
+        tags:
+          - docker
+
+      - name: Ensure Docker is running and enabled
+        service:
+          name: docker
+          state: started
+          enabled: true
+        tags:
+          - docker
