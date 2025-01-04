@@ -1,0 +1,39 @@
+---
+  - name: Deploy MySQL database container
+    hosts: all
+    become: true
+    vars_files:
+      - "/home/ansible/.env"
+    tasks:
+      - name: Check loaded environment variables
+        debug:
+          msg:
+            - "DB Host: {{ DB_HOST }}"
+            - "DB User: {{ DB_USER }}"
+            - "DB Password: {{ DB_PASSWORD }}"
+            - "DB Name: {{ DB_NAME }}"
+
+      - name: Pull MySQL Docker image
+        docker_image:
+          name: mysql
+          tag: "latest"
+          source: pull
+          force_tag: yes
+
+      - name: Run MySQL container
+        docker_container:
+          name: "{{DB_NAME}}"
+          image: mysql:latest
+          state: started
+          restart_policy: always
+          exposed_ports:
+            - "3306"
+          published_ports:
+            - "3306:3306"
+          env:
+            MYSQL_ROOT_PASSWORD: "{{ DB_PASSWORD }}"            # Пароль для root
+            MYSQL_DATABASE: "{{ DB_NAME }}"                     # Название базы данных
+            MYSQL_USER: "{{ DB_USER }}"                         # Пользователь базы данных
+            MYSQL_PASSWORD: "{{ DB_PASSWORD }}"                 # Пароль для пользователя
+          volumes:
+            - /home/db:/var/lib/mysql                           # Тома для хранения данных базы
