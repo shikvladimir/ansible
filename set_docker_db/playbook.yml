@@ -31,9 +31,9 @@
           published_ports:
             - "3306:3306"
           env:
-            MYSQL_ROOT_PASSWORD: "{{ DB_PASSWORD }}"            # Пароль для root
-            MYSQL_DATABASE: "{{ DB_NAME }}"                     # Название базы данных
-            MYSQL_USER: "{{ DB_USER }}"                         # Пользователь базы данных
-            MYSQL_PASSWORD: "{{ DB_PASSWORD }}"                 # Пароль для пользователя
+            MYSQL_ROOT_PASSWORD: "{{ DB_PASSWORD }}"
+            MYSQL_DATABASE: "{{ DB_NAME }}"
+            MYSQL_USER: "{{ DB_USER }}"
+            MYSQL_PASSWORD: "{{ DB_PASSWORD }}"
           volumes:
-            - /home/db:/var/lib/mysql                           # Тома для хранения данных базы
+            - /home/db:/var/lib/mysql
