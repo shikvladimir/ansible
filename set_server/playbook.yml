@@ -3,37 +3,24 @@
     hosts: all
     become: true 
     tasks:
-      - name:  Install nano package
+      - name:  Install required dependencies
         apt:
-          name: nano
-          state: present
-
-      - name: Install fish package
-        apt:
-          name: fish
-          state: present
-        tags:
-          - fish
-
-      - name: Install tree package
-        apt:
-          name: tree
-          state: present
-        tags:
+          name:
+            - nano
+            - fish
             - tree
+            - htop
+            - apt-transport-https
+            - ca-certificates
+            - curl
+            - software-properties-common
+          state: present
 
       - name: Set timezone to UTC
         timezone:
           name: UTC
         tags:
           - timezone
-
-      - name: Install htop
-        apt:
-          name: htop
-          state: present
-        tags:
-          - monitoring
 
       - name: Install pip for Python 3
         package:
@@ -44,3 +31,7 @@
         pip:
           name: requests
           state: present
+
+      - name: Update apt cache
+        apt:
+          update_cache: yes
