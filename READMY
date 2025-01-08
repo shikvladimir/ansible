@@ -3,3 +3,6 @@ ansible-playbook /home/ansible/set_server/playbook.yml
 
 #Test connection:
 ansible all -m ping
+
+#SHOW INVENTORY
+ansible-inventory --list
