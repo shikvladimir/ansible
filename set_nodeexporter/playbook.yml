@@ -1,0 +1,21 @@
+---
+  - name: Setting nodeexporter
+    hosts: all
+    become: true
+    tasks:
+      - name: Create monitoring network
+        docker_network:
+          name: monitor-net
+          driver: bridge
+
+      - name: Run MySQL container
+        docker_container:
+          name: node-exporter
+          image: prom/node-exporter:latest
+          state: started
+          expose:
+            - "9100"
+          ports:
+            - "9100:9100"
+          networks:
+            - name: monitor-net
