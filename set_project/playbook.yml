@@ -1,0 +1,23 @@
+---
+  - name: Setting ubuntu
+    hosts: all
+    become: true
+    vars_files:
+      - "/home/ansible/.env"
+    tasks:
+      - name: Clone project
+        git:
+          repo: "{{PROJECT_REPO}}"
+          dest: /home/{{PROJECT_NAME}}
+          version: main
+          force: yes
+
+      - name: Start project
+        shell: |
+          docker compose up -d
+        args:
+          chdir: /home/{{PROJECT_NAME}}
+
+      - name: Update apt cache
+        apt:
+          update_cache: yes
