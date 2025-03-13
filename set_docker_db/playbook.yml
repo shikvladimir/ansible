@@ -29,7 +29,7 @@
           exposed_ports:
             - "3306"
           published_ports:
-            - "3306:3306"
+            - "{{DB_PORT}}:3306"
           env:
             MYSQL_ROOT_PASSWORD: "{{ DB_PASSWORD }}"
             MYSQL_DATABASE: "{{ DB_NAME }}"
@@ -37,3 +37,11 @@
             MYSQL_PASSWORD: "{{ DB_PASSWORD }}"
           volumes:
             - /home/db:/var/lib/mysql
+
+      - name: Ensure MySQL data directory exists
+        file:
+          path: /home/db
+          state: directory
+          owner: "999"
+          group: "999"
+          mode: "0777"
