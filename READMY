@@ -3,6 +3,15 @@ ansible-playbook /home/ansible/set_server/playbook.yml
 
 #Test connection:
 ansible all -m ping
+если нет ключа, то можно войти по паролю
+ansible all -m ping -k
 
 #SHOW INVENTORY
 ansible-inventory --list
+
+#Запуск в Docker
+1. docker build -t my-ansible .
+2. docker run --rm -it \
+     -v $(pwd):/ansible \
+     -v ~/.ssh:/root/.ssh:ro \
+     my-ansible bash
