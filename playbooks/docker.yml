@@ -1,32 +1,73 @@
+
 ---
-  - name: Setting Docker
-    hosts: all
-    become: true 
-    tasks:
-      - name: Add Docker GPG apt Key
-        apt_key:
-          url: https://download.docker.com/linux/ubuntu/gpg
-          state: present
+- name: Install and configure Docker
+  hosts: all
+  become: true
 
-      - name: Add Docker Repository
-        apt_repository:
-          repo: deb https://download.docker.com/linux/ubuntu focal stable
-          state: present
+  tasks:
+    - name: Install prerequisites
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
 
-      - name: Update apt cache
-        apt:
-          update_cache: yes
+    - name: Create directory for APT keyrings
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
 
-      - name: Install Docker
-        apt:
-          name: docker-ce
-          state: latest
-          update_cache: true
+    - name: Download Docker GPG key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: "0644"
 
-      - name: Ensure Docker is running and enabled
-        service:
-          name: docker
-          state: started
-          enabled: true
-        tags:
-          - docker
+    - name: Get Ubuntu architecture
+      ansible.builtin.command: dpkg --print-architecture
+      register: docker_architecture
+      changed_when: false
+
+    - name: Get Ubuntu release codename
+      ansible.builtin.command: bash -c '. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}"'
+      register: ubuntu_codename
+      changed_when: false
+
+    - name: Add Docker repository
+      ansible.builtin.apt_repository:
+        repo: >-
+          deb [arch={{ docker_architecture.stdout }}
+          signed-by=/etc/apt/keyrings/docker.asc]
+          https://download.docker.com/linux/ubuntu
+          {{ ubuntu_codename.stdout }} stable
+        filename: docker
+        state: present
+        update_cache: true
+
+    - name: Install Docker Engine and plugins
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+    - name: Ensure Docker is running and enabled
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Check Docker version
+      ansible.builtin.command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Display Docker version
+      ansible.builtin.debug:
+        msg: "{{ docker_version.stdout }}"
