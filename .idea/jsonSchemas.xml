@@ -17,6 +17,21 @@
                   <Item>
                     <option name="path" value="set_server/playbook.yml" />
                   </Item>
+                  <Item>
+                    <option name="path" value="set_postgre/playbook.yml" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="set_postgresql/playbook.yml" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="playbooks/postgresql.yml" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="playbooks/postgresql-database.yml" />
+                  </Item>
+                  <Item>
+                    <option name="path" value="playbooks/mysql.yml" />
+                  </Item>
                 </list>
               </option>
             </SchemaInfo>
