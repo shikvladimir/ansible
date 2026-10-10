@@ -1,0 +1,36 @@
+---
+- name: Create PostgreSQL database for project
+  hosts: all
+  become: true
+
+  vars_prompt:
+    - name: postgresql_db_name
+      prompt: "Enter database name"
+      private: false
+
+    - name: postgresql_app_user
+      prompt: "Enter database user"
+      private: false
+
+    - name: postgresql_app_password
+      prompt: "Enter database user password"
+      private: true
+      confirm: true
+
+  tasks:
+    - name: Create database user
+      become_user: postgres
+      community.postgresql.postgresql_user:
+        name: "{{ postgresql_app_user }}"
+        password: "{{ postgresql_app_password }}"
+        login_db: postgres
+        state: present
+      no_log: true
+
+    - name: Create project database
+      become_user: postgres
+      community.postgresql.postgresql_db:
+        name: "{{ postgresql_db_name }}"
+        owner: "{{ postgresql_app_user }}"
+        state: present
+        maintenance_db: postgres

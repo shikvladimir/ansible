@@ -15,5 +15,9 @@ WORKDIR /ansible
 
 COPY . .
 
+COPY ansible-commands.sh /root/ansible-commands.sh
+
+RUN echo 'source /root/ansible-commands.sh' >> /root/.bashrc
+
 # Запуск по умолчанию
 CMD ["ansible", "--version"]

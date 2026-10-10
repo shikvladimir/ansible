@@ -1,0 +1,31 @@
+---
+- name: Install and configure PostgreSQL
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install PostgreSQL
+      ansible.builtin.apt:
+        name:
+          - postgresql
+          - postgresql-contrib
+          - python3-psycopg2
+        state: present
+
+    - name: Start and enable PostgreSQL
+      ansible.builtin.service:
+        name: postgresql
+        state: started
+        enabled: true
+
+    - name: Remove test database if present
+      become_user: postgres
+      community.postgresql.postgresql_db:
+        name: test
+        state: absent
+        maintenance_db: postgres

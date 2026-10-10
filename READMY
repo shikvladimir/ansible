@@ -1,6 +1,9 @@
 #Start playbook:
 ansible-playbook /home/ansible/set_server/playbook.yml
 
+ansible-playbook -i hosts.yml playbooks/postgresql.yml
+
+
 #Test connection:
 ansible all -m ping
 если нет ключа, то можно войти по паролю
@@ -15,3 +18,6 @@ ansible-inventory --list
      -v $(pwd):/ansible \
      -v ~/.ssh:/root/.ssh:ro \
      my-ansible bash
+
+#Short command
+ansible-help
