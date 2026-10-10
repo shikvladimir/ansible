@@ -1,37 +1,35 @@
 ---
-  - name: Setting ubuntu
-    hosts: all
-    become: true 
-    tasks:
-      - name:  Install required dependencies
-        apt:
-          name:
-            - nano
-            - fish
-            - tree
-            - htop
-            - apt-transport-https
-            - ca-certificates
-            - curl
-            - software-properties-common
-          state: present
+- name: Initial Ubuntu server setup
+  hosts: all
+  become: true
 
-      - name: Set timezone to UTC
-        timezone:
-          name: UTC
-        tags:
-          - timezone
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
 
-      - name: Install pip for Python 3
-        package:
-          name: python3-pip
-          state: present
+    - name: Install basic utilities
+      ansible.builtin.apt:
+        name:
+          - nano
+          - fish
+          - tree
+          - htop
+          - curl
+          - wget
+          - git
+          - unzip
+          - zip
+          - ca-certificates
+          - gnupg
+          - software-properties-common
+          - python3-pip
+          - python3-requests
+        state: present
 
-      - name: Install requests Python package
-        pip:
-          name: requests
-          state: present
-
-      - name: Update apt cache
-        apt:
-          update_cache: yes
+    - name: Set timezone to UTC
+      community.general.timezone:
+        name: UTC
+      tags:
+        - timezone
