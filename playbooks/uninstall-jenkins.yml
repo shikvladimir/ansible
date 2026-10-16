@@ -1,0 +1,37 @@
+
+---
+- name: Uninstall Jenkins
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Stop Jenkins
+      ansible.builtin.systemd:
+        name: jenkins
+        state: stopped
+      failed_when: false
+
+    - name: Disable Jenkins service
+      ansible.builtin.systemd:
+        name: jenkins
+        enabled: false
+      failed_when: false
+
+    - name: Remove Jenkins package
+      ansible.builtin.apt:
+        name: jenkins
+        state: absent
+        purge: true
+        autoremove: false
+
+    - name: Remove Jenkins repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/"
+        filename: jenkins
+        state: absent
+        update_cache: true
+
+    - name: Remove Jenkins repository key
+      ansible.builtin.file:
+        path: /etc/apt/keyrings/jenkins-keyring.asc
+        state: absent

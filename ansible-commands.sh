@@ -9,6 +9,10 @@ alias ansible-postgresql-database='ansible-playbook -i hosts.yml playbooks/postg
 #Docker
 alias ansible-docker='ansible-playbook -i hosts.yml playbooks/docker.yml'
 
+#Jenkins
+alias ansible-jenkins='ansible-playbook -i hosts.yml playbooks/jenkins.yml'
+alias ansible-jenkins-uninstall='ansible-playbook -i hosts.yml playbooks/uninstall-jenkins.yml'
+
 # Help
 ansible-help() {
   cat <<'EOF'
@@ -18,5 +22,7 @@ Ansible commands:
   ansible-postgresql:    Install and configure PostgreSQL
   ansible-postgresql-database:   Create and configure PostgreSQL database for project
   ansible-docker:   Install and configure Docker
+  ansible-jenkins:   Install and configure Jenkins
+  ansible-jenkins-uninstall:   Uninstall Jenkins
 EOF
 }
